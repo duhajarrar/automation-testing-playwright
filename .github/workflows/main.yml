@@ -29,4 +29,5 @@ jobs:
  
     - name: run playwright test
       run: |
+        npx playwright install
         npx playwright test
