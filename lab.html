@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playwright Test Lab</title>
+
+  <style>
+    :root {
+      --ink: #14213d;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --purple: #7c3aed;
+      --pink: #ec4899;
+      --green: #059669;
+      --red: #dc2626;
+      --soft: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(236, 72, 153, 0.12), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(37, 99, 235, 0.12), transparent 30%),
+        linear-gradient(135deg, #fff7ed, #eef2ff, #ecfeff);
+    }
+
+    header {
+      padding: 40px 20px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 8px 0;
+      font-size: clamp(36px, 6vw, 58px);
+      letter-spacing: -2px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: auto;
+      padding-bottom: 70px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      margin: 18px 0;
+      box-shadow: 0 16px 45px rgba(30, 41, 59, 0.10);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cfd4dc;
+      border-radius: 12px;
+      background: white;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 11px 15px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn.primary {
+      color: white;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+    }
+
+    .btn.soft {
+      color: var(--ink);
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 11px;
+      border-radius: 12px;
+      background: var(--soft);
+    }
+
+    .ok {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .error {
+      color: var(--red);
+      font-weight: 800;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card {
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    .challenge ol {
+      line-height: 1.7;
+    }
+
+    .drags {
+      display: flex;
+      gap: 20px;
+    }
+
+    .drag-box,
+    .drop-box {
+      flex: 1;
+      min-height: 100px;
+      padding: 16px;
+      border: 2px dashed #c4b5fd;
+      border-radius: 14px;
+    }
+
+    .drop-box.active {
+      background: #ecfdf5;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 260px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .drags {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="badge">FINAL PRACTICAL EXAM</div>
+    <h1>🧪 Playwright Test Lab</h1>
+    <p>A practice website built specifically for Playwright automation.</p>
+  </header>
+
+  <main>
+
+    <!-- =========================================================
+         CHALLENGE LIST
+    ========================================================== -->
+    <section class="panel challenge">
+      <h2>🎯 Challenge List</h2>
+
+      <ol>
+        <li>Verify the page title and the main heading.</li>
+
+        <li>
+          Test valid login:
+          <b>username = duha</b>,
+          <b>password = playwright</b>.
+          Verify the success message and dashboard visibility.
+        </li>
+
+        <li>
+          Test invalid login and verify the error message.
+        </li>
+
+        <li>
+          Fill the profile form, select a country,
+          check the newsletter checkbox,
+          save it, and verify the summary.
+        </li>
+
+        <li>
+          Find the table row for <b>Duha</b>,
+          verify that her status is <b>Active</b>,
+          then click Edit inside the same row.
+        </li>
+
+        <li>
+          Click <b>Show delayed message</b>
+          and verify the message appears
+          without using <code>waitForTimeout()</code>.
+        </li>
+
+        <li>
+          Handle the confirm dialog and verify the result.
+        </li>
+
+        <li>
+          Handle the prompt dialog,
+          enter your name,
+          and verify the result.
+        </li>
+
+        <li>
+          Open the popup/new tab
+          and verify its title and heading.
+        </li>
+
+        <li>
+          Work inside the iframe:
+          enter secret code <b>PW2026</b>,
+          click Submit,
+          and verify <b>Frame success</b>.
+        </li>
+
+        <li>
+          Upload a <code>.txt</code> file
+          and verify the displayed filename.
+        </li>
+
+        <li>
+          Trigger a file download
+          and verify the Playwright download event.
+        </li>
+
+        <li>
+          Validate the downloaded filename
+          and optionally validate the file contents.
+        </li>
+
+        <li>
+          Drag the draggable card into the drop zone
+          and verify success.
+        </li>
+
+        <li>
+          Mock <code>**/api/profile</code>
+          using <code>page.route()</code>,
+          return JSON,
+          and verify the mocked user appears.
+        </li>
+
+        <li>
+          Save <code>theme=dark</code>
+          in localStorage
+          and verify it.
+        </li>
+
+        <li>
+          Use a Page Object for the login page.
+        </li>
+
+        <li>
+          Run the suite on Chromium and Firefox.
+        </li>
+      </ol>
+
+      <p>
+        <b>Bonus:</b>
+        use <code>test.step()</code>,
+        tags,
+        retries,
+        trace on first retry,
+        screenshot on failure,
+        storageState,
+        data-driven testing,
+        and a GitHub Actions workflow.
+      </p>
+    </section>
+
+
+    <!-- =========================================================
+         1. LOGIN
+    ========================================================== -->
+    <section class="panel">
+      <h2>1) Authentication</h2>
+
+      <div class="grid">
+
+        <div>
+          <div class="field">
+            <label for="username">Username</label>
+            <input
+              id="username"
+              placeholder="Username"
+              autocomplete="username"
+            />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Password"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button
+            id="loginBtn"
+            class="btn primary"
+          >
+            Login
+          </button>
+
+          <div
+            id="loginMsg"
+            class="status"
+          >
+            Not logged in
+          </div>
+        </div>
+
+
+        <div
+          id="dashboard"
+          class="card hidden"
+        >
+          <h3>Dashboard</h3>
+
+          <p>
+            Welcome to the practice dashboard.
+          </p>
+
+          <button
+            id="logoutBtn"
+            class="btn soft"
+          >
+            Logout
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         2. PROFILE FORM
+    ========================================================== -->
+    <section class="panel">
+      <h2>2) Profile Form</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <div class="field">
+            <label for="fullName">
+              Full name
+            </label>
+
+            <input
+              id="fullName"
+              placeholder="Full name"
+            />
+          </div>
+
+
+          <div class="field">
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+            />
+          </div>
+
+
+          <div class="field">
+            <label for="country">
+              Country
+            </label>
+
+            <select id="country">
+              <option value="">
+                Choose
+              </option>
+
+              <option value="PS">
+                Palestine
+              </option>
+
+              <option value="JO">
+                Jordan
+              </option>
+
+              <option value="DE">
+                Germany
+              </option>
+            </select>
+          </div>
+
+
+          <label>
+            <input
+              type="checkbox"
+              id="newsletter"
+            />
+
+            Subscribe to newsletter
+          </label>
+
+
+          <div style="margin-top: 14px;">
+            <button
+              id="saveProfile"
+              class="btn primary"
+            >
+              Save profile
+            </button>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Saved summary
+          </h3>
+
+          <div id="profileSummary">
+            Nothing saved yet.
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         3. TABLE
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        3) Table Challenge
+      </h2>
+
+      <table aria-label="Users table">
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Ahmad</td>
+            <td>Developer</td>
+            <td>Active</td>
+            <td>
+              <button class="btn soft edit-btn">
+                Edit
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Duha</td>
+            <td>QA Engineer</td>
+            <td>Active</td>
+            <td>
+              <button class="btn soft edit-btn">
+                Edit
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Lina</td>
+            <td>Designer</td>
+            <td>Inactive</td>
+            <td>
+              <button class="btn soft edit-btn">
+                Edit
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+
+      <div
+        id="editResult"
+        class="status"
+      >
+        No row edited.
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         4. DYNAMIC UI
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        4) Dynamic UI
+      </h2>
+
+      <button
+        id="delayedBtn"
+        class="btn primary"
+      >
+        Show delayed message
+      </button>
+
+      <div
+        id="delayedMessage"
+        class="status hidden"
+      >
+        ✅ Dynamic message loaded successfully.
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         5. DIALOGS
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        5) Browser Dialogs
+      </h2>
+
+      <button
+        id="confirmBtn"
+        class="btn soft"
+      >
+        Open confirm
+      </button>
+
+      <button
+        id="promptBtn"
+        class="btn soft"
+      >
+        Open prompt
+      </button>
+
+      <div
+        id="dialogResult"
+        class="status"
+      >
+        No dialog handled yet.
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         6. POPUP / NEW TAB
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        6) Popup / New Tab
+      </h2>
+
+      <a
+        id="popupLink"
+        class="btn primary"
+        href="/popup.html"
+        target="_blank"
+      >
+        Open details popup
+      </a>
+
+      <p class="footer-note">
+        This expects a separate
+        <code>popup.html</code>
+        file on your server.
+      </p>
+
+    </section>
+
+
+    <!-- =========================================================
+         7. IFRAME
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        7) iframe
+      </h2>
+
+      <iframe
+        id="practiceFrame"
+        title="Practice iframe"
+
+        srcdoc="
+        <!DOCTYPE html>
+
+        <html lang='en'>
+
+        <head>
+
+          <meta charset='UTF-8' />
+
+          <title>
+            Iframe Practice
+          </title>
+
+          <style>
+
+            body {
+              font-family: Arial, sans-serif;
+              padding: 24px;
+              background: #ffffff;
+            }
+
+            input {
+              display: block;
+              width: 100%;
+              max-width: 350px;
+              padding: 10px;
+              margin: 10px 0;
+              border: 1px solid #cfd4dc;
+              border-radius: 8px;
+            }
+
+            button {
+              padding: 9px 14px;
+              border: 0;
+              border-radius: 8px;
+              background: #7c3aed;
+              color: white;
+              cursor: pointer;
+              font-weight: bold;
+            }
+
+            #frameResult {
+              margin-top: 15px;
+              font-weight: bold;
+            }
+
+          </style>
+
+        </head>
+
+
+        <body>
+
+          <h2>
+            Iframe Practice
+          </h2>
+
+
+          <label for='frameInput'>
+            Secret code
+          </label>
+
+
+          <input
+            id='frameInput'
+            placeholder='Secret code'
+          />
+
+
+          <button
+            id='frameSubmit'
+          >
+            Submit
+          </button>
+
+
+          <p id='frameResult'>
+            Waiting...
+          </p>
+
+
+          <script>
+
+            const input =
+              document.getElementById('frameInput');
+
+            const submit =
+              document.getElementById('frameSubmit');
+
+            const result =
+              document.getElementById('frameResult');
+
+
+            submit.addEventListener(
+              'click',
+              function () {
+
+                if (
+                  input.value === 'PW2026'
+                ) {
+
+                  result.textContent =
+                    'Frame success';
+
+                  result.style.color =
+                    'green';
+
+                } else {
+
+                  result.textContent =
+                    'Wrong code';
+
+                  result.style.color =
+                    'red';
+                }
+
+              }
+            );
+
+          <\/script>
+
+        </body>
+
+        </html>
+        "
+      >
+      </iframe>
+
+    </section>
+
+
+    <!-- =========================================================
+         8. UPLOAD + DOWNLOAD
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        8) Upload + Download
+      </h2>
+
+      <div class="grid">
+
+        <div>
+
+          <div class="field">
+
+            <label for="fileInput">
+              Upload a .txt file
+            </label>
+
+            <input
+              id="fileInput"
+              type="file"
+              accept=".txt"
+            />
+
+          </div>
+
+
+          <div
+            id="uploadResult"
+            class="status"
+          >
+            No file uploaded.
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <p>
+            Download the practice file:
+          </p>
+
+          <a
+            id="downloadLink"
+            class="btn primary"
+            download="playwright-practice.txt"
+            href="data:text/plain;charset=utf-8,Playwright%20practice%20download%0AExpected%20value%3A%2042"
+          >
+            Download practice file
+          </a>
+
+          <p class="footer-note">
+            Suggested filename:
+            <code>playwright-practice.txt</code>
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         9. DRAG AND DROP
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        9) Drag & Drop
+      </h2>
+
+      <div class="drags">
+
+        <div class="drag-box">
+
+          <div
+            id="dragItem"
+            class="card"
+            draggable="true"
+          >
+            Drag me 🎴
+          </div>
+
+        </div>
+
+
+        <div
+          id="dropZone"
+          class="drop-box"
+        >
+          Drop here
+        </div>
+
+      </div>
+
+
+      <div
+        id="dragResult"
+        class="status"
+      >
+        Not dropped yet.
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         10. NETWORK MOCKING
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        10) Network Mocking
+      </h2>
+
+      <p>
+        This button requests
+        <code>/api/profile</code>.
+      </p>
+
+      <p>
+        The endpoint is intentionally missing.
+        Your Playwright test should intercept it
+        using <code>page.route()</code>.
+      </p>
+
+
+      <button
+        id="loadApi"
+        class="btn primary"
+      >
+        Load API Profile
+      </button>
+
+
+      <div
+        id="apiResult"
+        class="status"
+      >
+        No API profile loaded.
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         11. LOCAL STORAGE
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        11) Local Storage
+      </h2>
+
+      <div class="grid">
+
+        <div>
+
+          <div class="field">
+
+            <label for="themeInput">
+              Theme value
+            </label>
+
+            <input
+              id="themeInput"
+              placeholder="dark"
+            />
+
+          </div>
+
+
+          <button
+            id="saveTheme"
+            class="btn soft"
+          >
+            Save theme
+          </button>
+
+        </div>
+
+
+        <div>
+
+          <div
+            id="storageResult"
+            class="status"
+          >
+            Stored theme: none
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         12. TIME / CLOCK PRACTICE
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        12) Time / Clock Practice
+      </h2>
+
+      <p>
+        This section uses JavaScript time.
+        You can later control it using Playwright Clock.
+      </p>
+
+      <button
+        id="startTimer"
+        class="btn primary"
+      >
+        Start 10 second timer
+      </button>
+
+      <div
+        id="timerResult"
+        class="status"
+      >
+        Timer not started.
+      </div>
+
+      <div
+        id="currentTime"
+        class="status"
+      >
+        Current time:
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         13. PARAMETERIZATION / DDT PRACTICE DATA
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        13) Parameterization / DDT Practice
+      </h2>
+
+      <p>
+        Use these cases from your Playwright test:
+      </p>
+
+      <table aria-label="Login test data">
+
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Expected</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>duha</td>
+            <td>playwright</td>
+            <td>success</td>
+          </tr>
+
+          <tr>
+            <td>wrong</td>
+            <td>playwright</td>
+            <td>error</td>
+          </tr>
+
+          <tr>
+            <td>duha</td>
+            <td>wrong</td>
+            <td>error</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </section>
+
+
+    <!-- =========================================================
+         GRADING
+    ========================================================== -->
+    <section class="panel">
+
+      <h2>
+        📊 Grading Rubric
+      </h2>
+
+      <table>
+
+        <tr>
+          <th>Area</th>
+          <th>Weight</th>
+          <th>What I will check</th>
+        </tr>
+
+        <tr>
+          <td>Correctness</td>
+          <td>40%</td>
+          <td>
+            Tests validate the expected behavior.
+          </td>
+        </tr>
+
+        <tr>
+          <td>Locator quality</td>
+          <td>20%</td>
+          <td>
+            Stable, readable,
+            user-facing locators.
+          </td>
+        </tr>
+
+        <tr>
+          <td>Reliability</td>
+          <td>15%</td>
+          <td>
+            Proper waits,
+            isolation,
+            no unnecessary sleeps.
+          </td>
+        </tr>
+
+        <tr>
+          <td>Structure</td>
+          <td>15%</td>
+          <td>
+            POM where useful,
+            clean config,
+            sensible organization.
+          </td>
+        </tr>
+
+        <tr>
+          <td>Readability</td>
+          <td>10%</td>
+          <td>
+            Clear naming
+            and understandable tests.
+          </td>
+        </tr>
+
+      </table>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
+
+  <script>
+
+    /* ---------------------------------------------------------
+       LOGIN
+    ---------------------------------------------------------- */
+
+    const usernameInput =
+      document.getElementById(
+        'username'
+      );
+
+    const passwordInput =
+      document.getElementById(
+        'password'
+      );
+
+    const loginMessage =
+      document.getElementById(
+        'loginMsg'
+      );
+
+    const dashboard =
+      document.getElementById(
+        'dashboard'
+      );
+
+
+    document
+      .getElementById('loginBtn')
+      .addEventListener(
+        'click',
+        function () {
+
+          const isValid =
+            usernameInput.value === 'duha' &&
+            passwordInput.value === 'playwright';
+
+
+          if (isValid) {
+
+            loginMessage.textContent =
+              'Login successful';
+
+            loginMessage.className =
+              'status ok';
+
+            dashboard.classList.remove(
+              'hidden'
+            );
+
+            localStorage.setItem(
+              'loggedIn',
+              'true'
+            );
+
+          } else {
+
+            loginMessage.textContent =
+              'Invalid username or password';
+
+            loginMessage.className =
+              'status error';
+
+            dashboard.classList.add(
+              'hidden'
+            );
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById('logoutBtn')
+      .addEventListener(
+        'click',
+        function () {
+
+          localStorage.removeItem(
+            'loggedIn'
+          );
+
+          dashboard.classList.add(
+            'hidden'
+          );
+
+          loginMessage.textContent =
+            'Logged out';
+
+          loginMessage.className =
+            'status';
+        }
+      );
+
+
+    /* Restore login state */
+
+    if (
+      localStorage.getItem(
+        'loggedIn'
+      ) === 'true'
+    ) {
+
+      dashboard.classList.remove(
+        'hidden'
+      );
+
+      loginMessage.textContent =
+        'Restored login state';
+
+      loginMessage.className =
+        'status ok';
+    }
+
+
+    /* ---------------------------------------------------------
+       PROFILE FORM
+    ---------------------------------------------------------- */
+
+    document
+      .getElementById('saveProfile')
+      .addEventListener(
+        'click',
+        function () {
+
+          const name =
+            document.getElementById(
+              'fullName'
+            ).value;
+
+          const email =
+            document.getElementById(
+              'email'
+            ).value;
+
+          const country =
+            document.getElementById(
+              'country'
+            ).value;
+
+          const newsletter =
+            document.getElementById(
+              'newsletter'
+            ).checked
+              ? 'yes'
+              : 'no';
+
+
+          document
+            .getElementById(
+              'profileSummary'
+            )
+            .textContent =
+              `Name: ${name} | ` +
+              `Email: ${email} | ` +
+              `Country: ${country} | ` +
+              `Newsletter: ${newsletter}`;
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       TABLE
+    ---------------------------------------------------------- */
+
+    document
+      .querySelectorAll(
+        '.edit-btn'
+      )
+      .forEach(
+        function (button) {
+
+          button.addEventListener(
+            'click',
+            function () {
+
+              const row =
+                button.closest('tr');
+
+              const name =
+                row.cells[0]
+                  .textContent;
+
+              document
+                .getElementById(
+                  'editResult'
+                )
+                .textContent =
+                  'Editing: ' + name;
+            }
+          );
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       DYNAMIC ELEMENT
+    ---------------------------------------------------------- */
+
+    document
+      .getElementById(
+        'delayedBtn'
+      )
+      .addEventListener(
+        'click',
+        function () {
+
+          const message =
+            document.getElementById(
+              'delayedMessage'
+            );
+
+          message.classList.add(
+            'hidden'
+          );
+
+
+          setTimeout(
+            function () {
+
+              message.classList.remove(
+                'hidden'
+              );
+
+            },
+            1200
+          );
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       DIALOGS
+    ---------------------------------------------------------- */
+
+    document
+      .getElementById(
+        'confirmBtn'
+      )
+      .addEventListener(
+        'click',
+        function () {
+
+          const accepted =
+            confirm(
+              'Are you sure?'
+            );
+
+
+          document
+            .getElementById(
+              'dialogResult'
+            )
+            .textContent =
+              'Confirm result: ' +
+              (
+                accepted
+                  ? 'accepted'
+                  : 'dismissed'
+              );
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        'promptBtn'
+      )
+      .addEventListener(
+        'click',
+        function () {
+
+          const value =
+            prompt(
+              'Enter your name',
+              ''
+            );
+
+
+          document
+            .getElementById(
+              'dialogResult'
+            )
+            .textContent =
+              'Prompt result: ' +
+              (
+                value ??
+                'dismissed'
+              );
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       FILE UPLOAD
+    ---------------------------------------------------------- */
+
+    document
+      .getElementById(
+        'fileInput'
+      )
+      .addEventListener(
+        'change',
+        function (event) {
+
+          const file =
+            event.target.files[0];
+
+          document
+            .getElementById(
+              'uploadResult'
+            )
+            .textContent =
+              file
+                ? 'Uploaded: ' +
+                  file.name
+                : 'No file uploaded.';
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       DRAG AND DROP
+    ---------------------------------------------------------- */
+
+    const dragItem =
+      document.getElementById(
+        'dragItem'
+      );
+
+    const dropZone =
+      document.getElementById(
+        'dropZone'
+      );
+
+
+    dragItem.addEventListener(
+      'dragstart',
+      function (event) {
+
+        event.dataTransfer
+          .setData(
+            'text/plain',
+            'dragItem'
+          );
+
+      }
+    );
+
+
+    dropZone.addEventListener(
+      'dragover',
+      function (event) {
+
+        event.preventDefault();
+
+        dropZone.classList.add(
+          'active'
+        );
+
+      }
+    );
+
+
+    dropZone.addEventListener(
+      'dragleave',
+      function () {
+
+        dropZone.classList.remove(
+          'active'
+        );
+
+      }
+    );
+
+
+    dropZone.addEventListener(
+      'drop',
+      function (event) {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+          'active'
+        );
+
+        dropZone.appendChild(
+          dragItem
+        );
+
+
+        document
+          .getElementById(
+            'dragResult'
+          )
+          .textContent =
+            'Drop successful';
+
+      }
+    );
+
+
+    /* ---------------------------------------------------------
+       API / NETWORK MOCKING
+    ---------------------------------------------------------- */
+
+    document
+      .getElementById(
+        'loadApi'
+      )
+      .addEventListener(
+        'click',
+        async function () {
+
+          const output =
+            document.getElementById(
+              'apiResult'
+            );
+
+          output.textContent =
+            'Loading...';
+
+
+          try {
+
+            const response =
+              await fetch(
+                '/api/profile'
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                'HTTP ' +
+                response.status
+              );
+            }
+
+
+            const data =
+              await response.json();
+
+
+            output.textContent =
+              'API user: ' +
+              data.name;
+
+            output.className =
+              'status ok';
+
+
+          } catch (error) {
+
+            output.textContent =
+              'API failed — expected until Playwright mocks /api/profile';
+
+            output.className =
+              'status error';
+          }
+
+        }
+      );
+
+
+    /* ---------------------------------------------------------
+       LOCAL STORAGE
+    ---------------------------------------------------------- */
+
+    const storageResult =
+      document.getElementById(
+        'storageResult'
+      );
+
+
+    function refreshStoredTheme() {
+
+      storageResult.textContent =
+        'Stored theme: ' +
+        (
+          localStorage.getItem(
+            'theme'
+          ) ||
+          'none'
+        );
+    }
+
+
+    document
+      .getElementById(
+        'saveTheme'
+      )
+      .addEventListener(
+        'click',
+        function () {
+
+          const value =
+            document.getElementById(
+              'themeInput'
+            ).value;
+
+
+          localStorage.setItem(
+            'theme',
+            value
+          );
+
+
+          refreshStoredTheme();
+
+        }
+      );
+
+
+    refreshStoredTheme();
+
+
+    /* ---------------------------------------------------------
+       TIME / CLOCK
+    ---------------------------------------------------------- */
+
+    const timerResult =
+      document.getElementById(
+        'timerResult'
+      );
+
+    const currentTime =
+      document.getElementById(
+        'currentTime'
+      );
+
+
+    function refreshCurrentTime() {
+
+      currentTime.textContent =
+        'Current time: ' +
+        new Date()
+          .toISOString();
+    }
+
+
+    refreshCurrentTime();
+
+
+    setInterval(
+      refreshCurrentTime,
+      1000
+    );
+
+
+    document
+      .getElementById(
+        'startTimer'
+      )
+      .addEventListener(
+        'click',
+        function () {
+
+          timerResult.textContent =
+            'Timer running...';
+
+
+          setTimeout(
+            function () {
+
+              timerResult.textContent =
+                'Timer finished';
+
+              timerResult.className =
+                'status ok';
+
+            },
+            10000
+          );
+
+        }
+      );
+
+  </script>
+
+</body>
+</html>

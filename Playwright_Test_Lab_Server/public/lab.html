@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Playwright Final Test Lab</title>
+<style>
+:root{--ink:#14213d;--muted:#667085;--line:#e5e7eb;--purple:#7c3aed;--pink:#ec4899;--green:#059669}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(135deg,#fff7ed,#eef2ff,#ecfeff);color:var(--ink)}
+header{padding:32px 20px;text-align:center}header h1{font-size:44px;margin:0;letter-spacing:-2px}header p{color:var(--muted)}
+main{max-width:1100px;margin:auto;padding:0 20px 70px}.panel{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:22px;padding:20px;margin:16px 0;box-shadow:0 16px 45px rgba(30,41,59,.10)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:6px;margin:10px 0}input,select,textarea,button{font:inherit}.field input,.field select,.field textarea{padding:11px 12px;border:1px solid #cfd4dc;border-radius:12px}.btn{padding:11px 14px;border:0;border-radius:12px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}.primary{background:linear-gradient(90deg,var(--purple),var(--pink));color:white}.soft{background:#fff;border:1px solid var(--line);color:var(--ink)}.ok{color:var(--green);font-weight:800}.error{color:#dc2626;font-weight:800}.card{padding:14px;background:#fff;border:1px solid var(--line);border-radius:16px}.hidden{display:none}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid var(--line);text-align:left}.drags{display:flex;gap:20px}.dragbox,.dropbox{min-height:90px;flex:1;border:2px dashed #c4b5fd;border-radius:14px;padding:14px}.dropbox.active{background:#ecfdf5}.challenge ol{line-height:1.65}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:800}.status{padding:10px;border-radius:12px;background:#f8fafc;margin-top:10px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="badge">FINAL PRACTICAL EXAM</div><h1>🧪 Playwright Test Lab</h1><p>This site exists specifically for you to automate it.</p></header>
+<main>
+<section class="panel challenge">
+<h2>🎯 Your challenge list</h2>
+<ol>
+<li>Verify the page title and main heading.</li>
+<li>Valid login: username <b>duha</b>, password <b>playwright</b>. Verify success and dashboard visibility.</li>
+<li>Invalid login: use wrong credentials and verify the error.</li>
+<li>Fill the profile form, select a country, check newsletter, and verify the saved summary.</li>
+<li>Find the table row for <b>Duha</b>, verify status <b>Active</b>, and click Edit in that row.</li>
+<li>Show the delayed message and verify it without using <code>waitForTimeout()</code>.</li>
+<li>Handle the confirm dialog and verify its result.</li>
+<li>Handle the prompt dialog, enter your name, and verify its result.</li>
+<li>Open a popup/new tab and verify its heading.</li>
+<li>Work inside the iframe and submit the correct secret code.</li>
+<li>Upload a .txt file and verify the displayed filename.</li>
+<li>Trigger a download and verify the download event.</li>
+<li>Drag the card into the drop zone and verify success.</li>
+<li>Intercept <code>**/api/profile</code>, fulfill JSON, click Load API Profile, and verify the mocked name.</li>
+<li>Store <code>theme=dark</code> in localStorage and verify the displayed value.</li>
+<li>Use a Page Object for the login flow.</li>
+<li>Run the suite on Chromium and Firefox.</li>
+</ol>
+<p><b>Bonus:</b> use <code>test.step()</code>, tags, trace on retry, screenshot on failure, and GitHub Actions.</p>
+</section>
+
+<section class="panel">
+<h2>1) Authentication</h2>
+<div class="grid">
+<div>
+<div class="field"><label for="username">Username</label><input id="username" placeholder="Username"/></div>
+<div class="field"><label for="password">Password</label><input id="password" type="password" placeholder="Password"/></div>
+<button class="btn primary" id="loginBtn">Login</button>
+<div id="loginMsg" class="status">Not logged in</div>
+</div>
+<div id="dashboard" class="card hidden"><h3>Dashboard</h3><p>Welcome to the practice dashboard.</p><button class="btn soft" id="logoutBtn">Logout</button></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>2) Profile Form</h2>
+<div class="grid">
+<div>
+<div class="field"><label for="fullName">Full name</label><input id="fullName" placeholder="Full name"/></div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="name@example.com"/></div>
+<div class="field"><label for="country">Country</label><select id="country"><option value="">Choose</option><option value="PS">Palestine</option><option value="JO">Jordan</option><option value="DE">Germany</option></select></div>
+<label><input type="checkbox" id="newsletter"/> Subscribe to newsletter</label>
+<div style="margin-top:12px"><button class="btn primary" id="saveProfile">Save profile</button></div>
+</div>
+<div class="card"><h3>Saved summary</h3><div id="profileSummary">Nothing saved yet.</div></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>3) Table Challenge</h2>
+<table aria-label="Users table">
+<thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>Ahmad</td><td>Developer</td><td>Active</td><td><button class="btn soft edit-btn">Edit</button></td></tr>
+<tr><td>Duha</td><td>QA Engineer</td><td>Active</td><td><button class="btn soft edit-btn">Edit</button></td></tr>
+<tr><td>Lina</td><td>Designer</td><td>Inactive</td><td><button class="btn soft edit-btn">Edit</button></td></tr>
+</tbody>
+</table>
+<div id="editResult" class="status">No row edited.</div>
+</section>
+
+<section class="panel"><h2>4) Dynamic UI</h2><button class="btn primary" id="delayedBtn">Show delayed message</button><div id="delayedMessage" class="status hidden">✅ Dynamic message loaded successfully.</div></section>
+
+<section class="panel"><h2>5) Browser Dialogs</h2><button class="btn soft" id="confirmBtn">Open confirm</button> <button class="btn soft" id="promptBtn">Open prompt</button><div id="dialogResult" class="status">No dialog handled yet.</div></section>
+
+<section class="panel"><h2>6) Popup / New Tab</h2><a class="btn primary" id="popupLink" href="popup.html" target="_blank">Open details popup</a></section>
+
+<section class="panel">
+  <h2>7) iframe</h2>
+
+  <iframe
+    id="practiceFrame"
+    title="Practice iframe"
+    style="
+      width: 100%;
+      height: 220px;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+    "
+    srcdoc="
+      <!DOCTYPE html>
+      <html lang='en'>
+      <head>
+        <meta charset='UTF-8' />
+        <title>Iframe Practice</title>
+
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+          }
+
+          input {
+            padding: 8px;
+            margin: 10px 0;
+          }
+
+          button {
+            padding: 8px 14px;
+            cursor: pointer;
+          }
+
+          #frameResult {
+            margin-top: 15px;
+            font-weight: bold;
+          }
+        </style>
+      </head>
+
+      <body>
+
+        <h2>Iframe Practice</h2>
+
+        <label for='frameInput'>
+          Secret code
+        </label>
+
+        <br />
+
+        <input
+          id='frameInput'
+          placeholder='Secret code'
+        />
+
+        <button id='frameSubmit'>
+          Submit
+        </button>
+
+        <p id='frameResult'>
+          Waiting...
+        </p>
+
+        <script>
+          const input =
+            document.getElementById('frameInput');
+
+          const submit =
+            document.getElementById('frameSubmit');
+
+          const result =
+            document.getElementById('frameResult');
+
+          submit.addEventListener('click', function () {
+
+            if (input.value === 'PW2026') {
+              result.textContent = 'Frame success';
+              result.style.color = 'green';
+            } else {
+              result.textContent = 'Wrong code';
+              result.style.color = 'red';
+            }
+
+          });
+        <\/script>
+
+      </body>
+      </html>
+    "
+  ></iframe>
+</section>
+
+<section class="panel">
+<h2>8) Upload + Download</h2>
+<div class="grid">
+<div><div class="field"><label for="fileInput">Upload a .txt file</label><input id="fileInput" type="file" accept=".txt"/></div><div id="uploadResult" class="status">No file uploaded.</div></div>
+<div><a id="downloadLink" class="btn primary" download="playwright-practice.txt" href="data:text/plain;charset=utf-8,Playwright%20practice%20download">Download practice file</a></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>9) Drag & Drop</h2>
+<div class="drags"><div class="dragbox"><div id="dragItem" draggable="true" class="card">Drag me 🎴</div></div><div id="dropZone" class="dropbox">Drop here</div></div>
+<div id="dragResult" class="status">Not dropped yet.</div>
+</section>
+
+<section class="panel">
+<h2>10) Network Mocking</h2>
+<p>This button requests <code>/api/profile</code>. The local server has no such endpoint on purpose. Your Playwright test should intercept it with <code>page.route()</code>.</p>
+<button class="btn primary" id="loadApi">Load API Profile</button><div id="apiResult" class="status">No API profile loaded.</div>
+</section>
+
+<section class="panel">
+<h2>11) Local Storage</h2>
+<div class="grid"><div><div class="field"><label for="themeInput">Theme value</label><input id="themeInput" placeholder="dark"/></div><button class="btn soft" id="saveTheme">Save theme</button></div><div><div id="storageResult" class="status">Stored theme: none</div></div></div>
+</section>
+
+<section class="panel">
+<h2>📊 Grading Rubric</h2>
+<table><tr><th>Area</th><th>Weight</th><th>What I will look for</th></tr>
+<tr><td>Correctness</td><td>40%</td><td>Tests validate the intended behavior.</td></tr>
+<tr><td>Locator quality</td><td>20%</td><td>Stable, readable, user-facing locators.</td></tr>
+<tr><td>Reliability</td><td>15%</td><td>No unnecessary sleeps; proper waiting and isolation.</td></tr>
+<tr><td>Structure</td><td>15%</td><td>POM where useful, sensible files, config and reusable setup.</td></tr>
+<tr><td>Readability</td><td>10%</td><td>Clear naming, simple code, understandable assertions.</td></tr></table>
+<p><b>When you finish:</b> send me your <code>tests/</code>, <code>pages/</code>, and <code>playwright.config.ts</code> files or your GitHub repo. I will grade it out of 100 and explain every deduction.</p>
+</section>
+</main>
+
+<script>
+const u=document.getElementById('username'),p=document.getElementById('password'),msg=document.getElementById('loginMsg'),dash=document.getElementById('dashboard');
+document.getElementById('loginBtn').onclick=()=>{if(u.value==='duha'&&p.value==='playwright'){msg.textContent='Login successful';msg.className='status ok';dash.classList.remove('hidden');localStorage.setItem('loggedIn','true')}else{msg.textContent='Invalid username or password';msg.className='status error';dash.classList.add('hidden')}};
+document.getElementById('logoutBtn').onclick=()=>{localStorage.removeItem('loggedIn');dash.classList.add('hidden');msg.textContent='Logged out';msg.className='status'};
+document.getElementById('saveProfile').onclick=()=>{const name=document.getElementById('fullName').value,email=document.getElementById('email').value,country=document.getElementById('country').value,n=document.getElementById('newsletter').checked?'yes':'no';document.getElementById('profileSummary').textContent=`Name: ${name} | Email: ${email} | Country: ${country} | Newsletter: ${n}`};
+document.querySelectorAll('.edit-btn').forEach(b=>b.onclick=()=>{const row=b.closest('tr');document.getElementById('editResult').textContent='Editing: '+row.cells[0].textContent});
+document.getElementById('delayedBtn').onclick=()=>{const el=document.getElementById('delayedMessage');el.classList.add('hidden');setTimeout(()=>el.classList.remove('hidden'),1200)};
+document.getElementById('confirmBtn').onclick=()=>{const ok=confirm('Are you sure?');document.getElementById('dialogResult').textContent='Confirm result: '+(ok?'accepted':'dismissed')};
+document.getElementById('promptBtn').onclick=()=>{const val=prompt('Enter your name','');document.getElementById('dialogResult').textContent='Prompt result: '+(val??'dismissed')};
+document.getElementById('fileInput').onchange=e=>{document.getElementById('uploadResult').textContent=e.target.files[0]?'Uploaded: '+e.target.files[0].name:'No file uploaded.'};
+const drag=document.getElementById('dragItem'),drop=document.getElementById('dropZone');
+drag.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','dragItem'));
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('active')});
+drop.addEventListener('dragleave',()=>drop.classList.remove('active'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('active');drop.appendChild(drag);document.getElementById('dragResult').textContent='Drop successful'});
+document.getElementById('loadApi').onclick=async()=>{const out=document.getElementById('apiResult');out.textContent='Loading...';try{const r=await fetch('/api/profile');if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();out.textContent='API user: '+data.name;out.className='status ok'}catch(e){out.textContent='API failed — expected until Playwright mocks /api/profile';out.className='status error'}};
+document.getElementById('saveTheme').onclick=()=>{const v=document.getElementById('themeInput').value;localStorage.setItem('theme',v);document.getElementById('storageResult').textContent='Stored theme: '+v};
+document.getElementById('storageResult').textContent='Stored theme: '+(localStorage.getItem('theme')||'none');
+if(localStorage.getItem('loggedIn')==='true'){dash.classList.remove('hidden');msg.textContent='Restored login state';msg.className='status ok'}
+</script>
+</body></html>

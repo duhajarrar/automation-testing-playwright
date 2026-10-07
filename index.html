@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Playwright Quest — Learn, Practice, Pass</title>
+<style>
+:root{--ink:#172033;--muted:#667085;--p:#7c3aed;--p2:#ec4899;--b:#2563eb;--g:#059669;--r:#dc2626;--card:rgba(255,255,255,.88);--line:rgba(23,32,51,.10);--shadow:0 18px 60px rgba(30,41,59,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);background:radial-gradient(circle at 12% 15%,rgba(236,72,153,.16),transparent 28%),radial-gradient(circle at 88% 10%,rgba(37,99,235,.16),transparent 28%),linear-gradient(135deg,#fff7ed,#eef2ff 48%,#ecfeff);min-height:100vh}
+header{position:sticky;top:0;z-index:9;backdrop-filter:blur(14px);background:rgba(255,255,255,.72);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:12px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between}.brand{font-weight:900}.brand span{background:linear-gradient(90deg,var(--p),var(--p2),var(--b));-webkit-background-clip:text;color:transparent}
+.scorebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.pill{padding:8px 12px;border-radius:999px;background:white;border:1px solid var(--line);font-weight:700;font-size:13px}.progress{width:170px;height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--p2),var(--p),var(--b));transition:.35s}
+main{max-width:1180px;margin:auto;padding:34px 20px 80px}.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:24px;align-items:center;margin-bottom:30px}.hero h1{font-size:clamp(38px,6vw,74px);line-height:.95;letter-spacing:-3px;margin:0 0 16px}.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--p),var(--p2),var(--b));-webkit-background-clip:text;color:transparent}.hero p{font-size:18px;color:var(--muted);max-width:720px}.hero-card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:28px;padding:22px;transform:rotate(2deg);animation:float 5s ease-in-out infinite}@keyframes float{50%{transform:rotate(2deg) translateY(-8px)}}
+.btn{border:0;border-radius:14px;padding:11px 15px;font-weight:800;cursor:pointer;transition:.2s;display:inline-flex;gap:8px;align-items:center;text-decoration:none}.btn:hover{transform:translateY(-2px)}.btn.primary{background:linear-gradient(90deg,var(--p),var(--p2));color:white}.btn.soft{background:white;color:var(--ink);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.level{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.level h3{margin:8px 0}.level p{color:var(--muted);font-size:14px;min-height:42px}.tag{font-size:12px;font-weight:900;color:var(--p);text-transform:uppercase;letter-spacing:.8px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.chip{font-size:12px;padding:6px 9px;background:#fff;border:1px solid var(--line);border-radius:999px}.section{margin-top:34px}.section h2{font-size:28px}
+.lesson{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:24px;padding:22px;margin:18px 0;box-shadow:var(--shadow)}.lesson h3{margin-top:0}.explain{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{border-radius:18px;padding:16px;border:1px solid var(--line);background:#fff}.box strong{display:block;margin-bottom:8px}.code{background:#101828;color:#f8fafc;padding:14px;border-radius:16px;overflow:auto;font:13px/1.55 Consolas,monospace;white-space:pre-wrap}.quiz{margin-top:14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,#fff,#f8fafc);border:1px solid var(--line)}.q label{display:block;padding:8px 10px;border-radius:10px;cursor:pointer}.q label:hover{background:#f3f4f6}.feedback{font-weight:800;margin-top:8px}.mission{border:2px dashed rgba(124,58,237,.35);background:linear-gradient(135deg,#faf5ff,#fff1f2);padding:18px;border-radius:18px;margin-top:14px}.mission textarea{width:100%;min-height:120px;border-radius:14px;border:1px solid var(--line);padding:12px;font-family:Consolas,monospace;resize:vertical}.mission .rubric{font-size:13px;color:var(--muted)}.badges{display:flex;gap:10px;flex-wrap:wrap}.badge{padding:10px 12px;border-radius:14px;background:white;border:1px solid var(--line);opacity:.35;filter:grayscale(1);transition:.3s}.badge.unlocked{opacity:1;filter:none;transform:scale(1.02)}
+footer{text-align:center;color:var(--muted);padding:30px}@media(max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.explain{grid-template-columns:1fr}}@media(max-width:600px){.grid{grid-template-columns:1fr}.progress{width:110px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand">🎭 <span>Playwright Quest</span></div><div class="scorebar"><span class="pill">XP: <b id="xp">0</b>/100</span><span class="pill">Level: <b id="rank">Starter</b></span><div class="progress"><div id="bar"></div></div><button class="btn soft" onclick="resetGame()">Reset</button></div></div></header>
+<main>
+<section class="hero"><div><div class="tag">Learn → Practice → Test → Get Graded</div><h1>Become a <em>Playwright QA</em> by playing.</h1><p>Each level gives you a plain-English explanation, a clarification example, a quick quiz, and a practical mission. Your progress is saved in your browser.</p><a class="btn primary" href="#map">🚀 Start the quest</a> <a class="btn soft" href="lab.html">🧪 Open Final Test Lab</a></div><div class="hero-card"><h3>🏆 How scoring works</h3><p>Quick quiz = 2 XP. Practical mission = 5 XP. The final lab is your real exam.</p><div class="badges"><div class="badge" id="badge-locators">🎯 Locator Hunter</div><div class="badge" id="badge-async">⏳ Async Master</div><div class="badge" id="badge-debug">🕵️ Debug Detective</div><div class="badge" id="badge-framework">🏗️ Framework Builder</div></div></div></section>
+
+<section id="map" class="section"><h2>🗺️ Learning Map</h2><div class="grid">
+<div class="level"><div class="tag">Level 1</div><h3>🧩 Test Anatomy</h3><p>test(), expect(), fixtures, page, async/await.</p><div class="meta"><span class="chip">Foundation</span></div><a class="btn soft" href="#l1">Open</a></div>
+<div class="level"><div class="tag">Level 2</div><h3>🎯 Locators</h3><p>Role, label, text, test id, filtering and strictness.</p><div class="meta"><span class="chip">Core</span></div><a class="btn soft" href="#l2">Open</a></div>
+<div class="level"><div class="tag">Level 3</div><h3>⚡ Actions + Assertions</h3><p>fill, click, check, select, expect.</p><div class="meta"><span class="chip">Core</span></div><a class="btn soft" href="#l3">Open</a></div>
+<div class="level"><div class="tag">Level 4</div><h3>⏱ Waiting & Reliability</h3><p>Auto-waiting, timeouts, retries and flakiness.</p><div class="meta"><span class="chip">Reliability</span></div><a class="btn soft" href="#l4">Open</a></div>
+<div class="level"><div class="tag">Level 5</div><h3>🪟 Browser Events</h3><p>Popups, dialogs, frames, downloads and uploads.</p><div class="meta"><span class="chip">Real-world</span></div><a class="btn soft" href="#l5">Open</a></div>
+<div class="level"><div class="tag">Level 6</div><h3>🏗 Framework Design</h3><p>Hooks, POM, data-driven tests, fixtures, auth.</p><div class="meta"><span class="chip">Architecture</span></div><a class="btn soft" href="#l6">Open</a></div>
+<div class="level"><div class="tag">Level 7</div><h3>🌐 Network + API</h3><p>waitForResponse, route, mocking, request fixture.</p><div class="meta"><span class="chip">Advanced</span></div><a class="btn soft" href="#l7">Open</a></div>
+<div class="level"><div class="tag">Level 8</div><h3>🧪 Config + Scale</h3><p>Projects, workers, tags, sharding, reports.</p><div class="meta"><span class="chip">Scale</span></div><a class="btn soft" href="#l8">Open</a></div>
+<div class="level"><div class="tag">Boss Level</div><h3>🕵️ Final Lab</h3><p>Build a real suite against a site made for your exam.</p><div class="meta"><span class="chip">Boss</span></div><a class="btn primary" href="#boss">Fight Boss</a></div>
+</div></section>
+
+<div id="lessons"></div>
+
+<section class="lesson" id="boss"><h3>🏁 Boss Level — Final Practical Exam</h3><div class="explain"><div class="box"><strong>What you should be able to do</strong>Build a small suite without copying: locators, actions, assertions, tables, dynamic UI, upload/download, popup, dialog, iframe, network mocking, auth state, POM, and cross-browser config.</div><div class="box"><strong>Clarification example</strong>A strong end-to-end test proves a business outcome. Example: after a valid login and adding a product, verify the cart count and product name—not only that the Add button was clicked.</div></div><div class="mission"><h4>👑 Your Boss Mission</h4><p>Open the Final Test Lab and create a Playwright project that automates the challenge list.</p><p class="rubric">Send me your test files or GitHub repo afterward. I will grade: correctness 40%, locator quality 20%, reliability 15%, structure 15%, readability 10%.</p><a class="btn primary" href="lab.html">Open Final Test Lab →</a> <button class="btn soft" onclick="completeMission('boss',20)">I finished my suite</button></div></section>
+</main><footer>Playwright Quest — your progress is saved locally.</footer>
+
+<script>
+const lessons=[
+{id:"l1",title:"Level 1 — Test Anatomy, Fixtures, async/await",badge:"async",concept:"A Playwright test is a named callback. Playwright injects fixtures such as page. async belongs to the whole callback; await pauses that async flow until a Promise finishes.",clarification:"Think of page as a ready browser tab handed to your test. You did not create it yourself. await page.goto(...) means: navigate, then continue only after the operation finishes.",code:`import { test, expect } from '@playwright/test';
+
+test('has title', async ({ page }) => {
+  await page.goto('https://example.com');
+  await expect(page).toHaveTitle(/Example/);
+});`,q:"Which statement is correct?",options:["async belongs to page","async belongs to the test callback function","await makes all tests parallel"],answer:1,mission:"Write a test from memory that opens a page and checks its title."},
+{id:"l2",title:"Level 2 — Locators",badge:"locators",concept:"Locators tell Playwright how to find elements. Prefer user-facing locators such as getByRole and getByLabel because they are readable and usually less fragile.",clarification:"Instead of page.locator('div:nth-child(3) > button'), use page.getByRole('button', { name: 'Login' }). The second locator describes what the user sees.",code:`const login = page.getByRole('button', { name: 'Login' });
+const email = page.getByLabel('Email');
+const row = page.getByRole('row').filter({ hasText: 'Duha' });`,q:"What is usually the strongest first choice for a Login button?",options:["Long XPath","getByRole('button', { name: 'Login' })","nth(7)"],answer:1,mission:"Write three stable locators for three different element types."},
+{id:"l3",title:"Level 3 — Actions and Assertions",badge:null,concept:"Actions change the UI. Assertions prove the expected result. A good test verifies the outcome, not only that a click happened.",clarification:"Clicking Submit is not the end. Verify a meaningful result such as a success message, URL change, table row, or saved value.",code:`await page.getByLabel('Name').fill('Duha');
+await page.getByRole('button', { name: 'Save' }).click();
+await expect(page.getByText('Saved successfully')).toBeVisible();`,q:"Which line proves a result?",options:["locator.click()","expect(locator).toBeVisible()","page.goto()"],answer:1,mission:"Write one Arrange/Act/Assert style test using fill, click, and expect."},
+{id:"l4",title:"Level 4 — Waiting, Timeouts, Retries",badge:"debug",concept:"Playwright auto-waits for elements to become actionable. Web-first assertions retry until their timeout. Test retries rerun the whole test after failure.",clarification:"expect(locator).toBeVisible() does not check only once. It re-checks until it passes or the timeout ends. That differs from retries: 2, which can rerun the entire test.",code:`await expect(message).toBeVisible({ timeout: 10_000 });
+
+export default defineConfig({
+  retries: process.env.CI ? 2 : 0
+});`,q:"What should usually replace waitForTimeout(5000)?",options:["A bigger sleep","A real condition or web-first assertion","Nothing"],answer:1,mission:"Create a dynamic-element test without using waitForTimeout()."},
+{id:"l5",title:"Level 5 — Popups, Dialogs, Frames, Uploads, Downloads",badge:null,concept:"Browser events can happen because of a click. Start waiting for the event before triggering the action, then await the event result.",clarification:"If a click opens a popup, create popupPromise first. Otherwise the popup can open before your test starts listening.",code:`const popupPromise = page.waitForEvent('popup');
+await page.getByText('Open details').click();
+const popup = await popupPromise;
+
+const frame = page.frameLocator('#payment-frame');
+await frame.getByLabel('Card number').fill('4111');`,q:"When should you call waitForEvent('popup')?",options:["After the popup closes","Before the click that opens it","Only in afterEach"],answer:1,mission:"Write one popup test and one iframe test."},
+{id:"l6",title:"Level 6 — Hooks, POM, Data, Fixtures, Authentication",badge:"framework",concept:"Framework structure reduces duplication while keeping tests readable. Use hooks for setup, POM for repeated page behavior, custom fixtures for reusable dependencies, and storageState for reusable authentication.",clarification:"Do not create a Page Object just because you can. Create one when multiple tests reuse the same locators and behaviors.",code:`test.beforeEach(async ({ page }) => {
+  await page.goto('/login');
+});
+
+class LoginPage {
+  constructor(private page: Page) {}
+  async login(user: string, pass: string) {
+    await this.page.getByLabel('Username').fill(user);
+    await this.page.getByLabel('Password').fill(pass);
+    await this.page.getByRole('button', { name: 'Login' }).click();
+  }
+}`,q:"Best reason to introduce a Page Object?",options:["To make more files","To reuse repeated page behavior and locators","Because every test must use one"],answer:1,mission:"Create one LoginPage class and use it from two tests."},
+{id:"l7",title:"Level 7 — Network and API",badge:null,concept:"Playwright can wait for responses, intercept requests, mock APIs, and send API requests directly. This helps with fast setup and deterministic UI tests.",clarification:"A page can call /api/profile. Your test can intercept it with page.route() and return controlled JSON, so the UI can be tested without a real backend.",code:`await page.route('**/api/profile', async route => {
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ name: 'Duha' })
+  });
+});`,q:"Why mock a network response?",options:["To make UI behavior deterministic","To avoid assertions","To disable Playwright"],answer:0,mission:"Intercept /api/profile in the Final Lab and make the UI show your mocked user."},
+{id:"l8",title:"Level 8 — Config, Projects, Parallelism, Tags, Reports",badge:null,concept:"playwright.config.ts controls how the suite runs: browsers, baseURL, retries, reports, traces, workers and more. Projects run the same tests under different configurations.",clarification:"One test file can run against Chromium and Firefox simply by defining two projects. You do not duplicate the test code.",code:`export default defineConfig({
+  use: { baseURL: 'http://localhost:8000' },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } }
+  ]
+});`,q:"What are Playwright projects mainly useful for?",options:["Different browsers/devices/configurations","Only renaming tests","Replacing locators"],answer:0,mission:"Configure Chromium + Firefox, HTML report, screenshot on failure, and trace on first retry."}
+];
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function lessonHtml(l){return `<section class="lesson" id="${l.id}"><h3>${l.title}</h3><div class="explain"><div class="box"><strong>Plain-English idea</strong>${l.concept}</div><div class="box"><strong>Clarification example</strong>${l.clarification}</div></div><pre class="code">${esc(l.code)}</pre><div class="quiz"><strong>⚔️ Quick Check — 2 XP</strong><div class="q"><p>${l.q}</p>${l.options.map((o,i)=>`<label><input type="radio" name="q-${l.id}" value="${i}"> ${o}</label>`).join("")}</div><button class="btn soft" onclick="checkQuiz('${l.id}',${l.answer})">Check answer</button><div class="feedback" id="f-${l.id}"></div></div><div class="mission"><h4>🧠 Practical Mission — 5 XP</h4><p>${l.mission}</p><textarea placeholder="Type or paste your practice code here. Keep the real version in VS Code."></textarea><div style="margin-top:10px"><button class="btn primary" onclick="completeMission('${l.id}',5)">Mark mission complete</button></div></div></section>`}
+document.getElementById("lessons").innerHTML=lessons.map(lessonHtml).join("");
+let state=JSON.parse(localStorage.getItem("pwquest")||'{"xp":0,"done":{}}');
+function save(){localStorage.setItem("pwquest",JSON.stringify(state));update()}
+function award(key,p){if(!state.done[key]){state.done[key]=true;state.xp=Math.min(100,state.xp+p);save()}}
+function checkQuiz(id,a){const pick=document.querySelector(`input[name="q-${id}"]:checked`),f=document.getElementById(`f-${id}`);if(!pick){f.textContent="Choose an answer first.";f.style.color="#d97706";return}if(Number(pick.value)===a){f.textContent="Correct! +2 XP";f.style.color="#059669";award("quiz-"+id,2)}else{f.textContent="Not quite. Re-read the clarification example and try again.";f.style.color="#dc2626"}}
+function completeMission(id,p){award("mission-"+id,p);alert("Mission marked complete. Keep the actual code in VS Code. I will grade your final suite when you send it.")}
+function update(){document.getElementById("xp").textContent=state.xp;document.getElementById("bar").style.width=state.xp+"%";document.getElementById("rank").textContent=state.xp<20?"Starter":state.xp<45?"Explorer":state.xp<70?"Automation Builder":state.xp<90?"Playwright Pro":"Boss Ready";if(state.done["quiz-l2"]||state.done["mission-l2"])document.getElementById("badge-locators").classList.add("unlocked");if(state.done["quiz-l1"]||state.done["mission-l1"])document.getElementById("badge-async").classList.add("unlocked");if(state.done["quiz-l4"]||state.done["mission-l4"])document.getElementById("badge-debug").classList.add("unlocked");if(state.done["quiz-l6"]||state.done["mission-l6"])document.getElementById("badge-framework").classList.add("unlocked")}
+function resetGame(){if(confirm("Reset all progress?")){localStorage.removeItem("pwquest");location.reload()}}
+update();
+</script>
+</body></html>
